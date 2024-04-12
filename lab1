@@ -1,0 +1,56 @@
+#!/bin/bash
+
+SOURCE_DIR=${1:-lab_uno}
+RM_LIST=${2:-2remove}
+TARGET_DIR=${3:-bakap}
+
+if [[ ! -e "${TARGET_DIR}" ]]; then
+    mkdir "${TARGET_DIR}"
+fi
+
+FILES=$(cat "${RM_LIST}")
+
+#echo "${FILES}"
+
+
+for FILE in ${FILES}; do
+    if [[ -e "${SOURCE_DIR}/${FILE}" ]]; then
+    rm -rf "${SOURCE_DIR}/${FILE}"
+    echo "Usunięto ${FILE}"
+    fi
+done
+for FILE in $(ls ${SOURCE_DIR}); do
+    if [[ -f "${SOURCE_DIR}/${FILE}" ]]; then
+        mv "${SOURCE_DIR}/${FILE}" "${TARGET_DIR}"
+        echo "Przeniesiono ${FILE} do ${TARGET_DIR}"
+    fi
+    if [[ -d "${SOURCE_DIR}/${FILE}" ]]; then
+        cp -r "${SOURCE_DIR}/${FILE}" "${TARGET_DIR}"
+        echo "Skopiowano ${FILE} do ${TARGET_DIR}"
+    fi
+done
+
+REMAINING_FILES_COUNT=$(find "${SOURCE_DIR}" -type f | wc -l)
+#echo "${REMAINING_FILES_COUNT}"
+if [[ "${REMAINING_FILES_COUNT}" -gt 0 ]]; then
+    echo "Jeszcze coś zostało."
+else
+    echo "Tu był Kononowicz."
+fi
+
+if [[ "${REMAINING_FILES_COUNT}" -ge 2 ]]; then
+    echo "Zostały co najmniej 2 pliki."
+fi
+
+if [[ "${REMAINING_FILES_COUNT}" -gt 4 ]]; then
+    echo "Zostało więcej niż 4 pliki."
+fi
+
+if [[ "${REMAINING_FILES_COUNT}" -gt 2 && "${REMAINING_FILES_COUNT}" -le 4 ]]; then
+    echo "Zostało co najmniej 2, ale nie więcej niż 4 pliki."
+fi
+
+CURRENT_DATE=$(date +%F)
+echo "${CURRENT_DATE}"
+
+zip -r "bakap_${CURRENT_DATE}.zip" "${TARGET_DIR}"
