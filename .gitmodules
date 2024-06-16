@@ -1,0 +1,3 @@
+[submodule "so2-labpython"]
+	path = so2-labpython
+	url = https://github.com/kvpe/so2-labpython
